@@ -42,11 +42,16 @@ npm start
 ```
 src
  ┣ lib
+ ┃ ┣ apis
+ ┃ ┃ ┣ getCacheData.ts
+ ┃ ┃ ┗ getData.ts
+ ┃ ┣ hooks
+ ┃ ┃ ┗ useDebounce.ts
  ┃ ┣ images
  ┃ ┃ ┣ logo.png
  ┃ ┃ ┗ search_icon.svg
- ┃ ┗ type
- ┃ ┃ ┗ 
+ ┃ ┗ types
+ ┃ ┃ ┗ sickItem.type.ts
  ┣ ui
  ┃ ┣ components
  ┃ ┃ ┣ common
@@ -60,16 +65,17 @@ src
  ┃ ┗ pages
  ┃ ┃ ┗ SearchPage.tsx
  ┣ App.tsx
- ┗ index.tsx
+ ┣ index.tsx
+ ┗ react-app-env.d.ts
 ```
 
 <br/>
 
 ## ✅ Best Practice 선정 및 개발 과정
 
-[1. API 호출별 로컬 캐싱]()    
-[2. 불필요 API 요청 방지]()    
-[3. 키보드로 추천 검색어 이동]()    
+[1. API 호출별 로컬 캐싱](https://github.com/preonbording-5/pre-onboarding-8th-3-5/wiki/1.-API-%ED%98%B8%EC%B6%9C%EB%B3%84-%EB%A1%9C%EC%BB%AC-%EC%BA%90%EC%8B%B1)    
+[2. 불필요 API 요청 방지](https://github.com/preonbording-5/pre-onboarding-8th-3-5/wiki/2.-%EB%B6%88%ED%95%84%EC%9A%94-API-%EC%9A%94%EC%B2%AD-%EB%B0%A9%EC%A7%80)    
+[3. 키보드로 추천 검색어 이동](https://github.com/preonbording-5/pre-onboarding-8th-3-5/wiki/3.-%ED%82%A4%EB%B3%B4%EB%93%9C%EB%A1%9C-%EC%B6%94%EC%B2%9C-%EA%B2%80%EC%83%89%EC%96%B4-%EC%9D%B4%EB%8F%99)
 
 <br/>
 
