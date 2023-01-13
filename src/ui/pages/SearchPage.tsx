@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { getCacheData } from '../../lib/apis/getCacheData';
 import { useDebounce } from '../../lib/hooks/useDebounce';
@@ -8,6 +8,7 @@ import { SickItem } from '../../lib/types/sickItem.type';
 const SearchPage = () => {
   const [keywordInput, setKeywordInput] = useState('');
   const [searchResult, setSearchResult] = useState<SickItem[]>([]);
+  const [selected, setSelected] = useState(0);
 
   useDebounce(
     async () => {
@@ -21,6 +22,31 @@ const SearchPage = () => {
     300,
     keywordInput,
   );
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.nativeEvent.isComposing) return;
+    if (keywordInput.length > 0) {
+      switch (e.key) {
+        case 'ArrowDown':
+          setSelected((prev) => prev + 1);
+          if (searchResult.length === selected) {
+            setSelected(0);
+            return;
+          }
+          break;
+        case 'ArrowUp':
+          if (selected === 0) {
+            return;
+          }
+          if (selected > 0) setSelected((prev) => prev - 1);
+          break;
+        case 'Enter': {
+          setKeywordInput(searchResult[selected].sickNm);
+          break;
+        }
+      }
+    }
+  };
 
   return (
     <>
@@ -37,6 +63,7 @@ const SearchPage = () => {
             onChange={(e) => setKeywordInput(e.target.value)}
             placeholder="🔍  질환명을 입력해 주세요."
             tabIndex={1}
+            onKeyDown={(e) => onKeyDown(e)}
           />
           <CancelButton onClick={() => setKeywordInput('')} tabIndex={2}>
             ✕
@@ -47,9 +74,9 @@ const SearchPage = () => {
         </InputBox>
       </Container>
       <SearchKeywords>
-        {!searchResult[0] && <p>검색 결과가 없습니다</p>}
+        {!searchResult[0] && <StyledP>검색 결과가 없습니다</StyledP>}
         {searchResult?.map(({ sickCd, sickNm }, i) => (
-          <SearchKeyword key={sickCd}>
+          <SearchKeyword key={sickCd} isFocus={i === selected ? true : false}>
             <button tabIndex={i + 4} onClick={() => setKeywordInput(sickNm)}>
               {sickNm.split(keywordInput)[0]}
               <strong>{keywordInput}</strong>
@@ -170,7 +197,7 @@ const SearchKeywords = styled.ul`
   height: auto;
   max-height: 500px;
   padding: 20px 0 20px 0;
-  margin: 0;
+  margin-left: 5px;
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -187,7 +214,7 @@ const SearchKeywords = styled.ul`
   list-style: none;
 `;
 
-const SearchKeyword = styled.li`
+const SearchKeyword = styled.li<{ isFocus?: boolean }>`
   width: 100%;
   height: 40px;
   cursor: pointer;
@@ -195,7 +222,7 @@ const SearchKeyword = styled.li`
   &:hover {
     background: #f5f5f5;
   }
-
+  background-color: ${(props) => (props.isFocus ? '#f5f5f5' : '#fff')};
   button {
     cursor: pointer;
     width: 100%;
@@ -208,4 +235,8 @@ const SearchKeyword = styled.li`
     padding: 20px 35px 20px 35px;
     font-size: 1rem;
   }
+`;
+
+const StyledP = styled.div`
+  margin-left: 20px;
 `;
