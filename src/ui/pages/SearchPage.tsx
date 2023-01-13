@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { getCacheData } from '../../lib/apis/getCacheData';
 import { useDebounce } from '../../lib/hooks/useDebounce';
@@ -9,7 +9,7 @@ const SearchPage = () => {
   const [keywordInput, setKeywordInput] = useState('');
   const [searchResult, setSearchResult] = useState<SickItem[]>([]);
   const [selected, setSelected] = useState(0);
-
+  const [openModal, setOpenModal] = useState(false);
   useDebounce(
     async () => {
       if (keywordInput === '') {
@@ -22,6 +22,15 @@ const SearchPage = () => {
     300,
     keywordInput,
   );
+
+  useEffect(() => {
+    if (keywordInput.length === 0) {
+      setOpenModal(false);
+    }
+    if (keywordInput.length > 0) {
+      setOpenModal(true);
+    }
+  }, [keywordInput, setOpenModal]);
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.nativeEvent.isComposing) return;
@@ -73,18 +82,20 @@ const SearchPage = () => {
           </Button>
         </InputBox>
       </Container>
-      <SearchKeywords>
-        {!searchResult[0] && <StyledP>검색 결과가 없습니다</StyledP>}
-        {searchResult?.map(({ sickCd, sickNm }, i) => (
-          <SearchKeyword key={sickCd} isFocus={i === selected ? true : false}>
-            <button tabIndex={i + 4} onClick={() => setKeywordInput(sickNm)}>
-              {sickNm.split(keywordInput)[0]}
-              <strong>{keywordInput}</strong>
-              {sickNm.split(keywordInput)[1]}
-            </button>
-          </SearchKeyword>
-        ))}
-      </SearchKeywords>
+      {openModal && (
+        <SearchKeywords>
+          {!searchResult[0] && <StyledP>검색 결과가 없습니다</StyledP>}
+          {searchResult?.map(({ sickCd, sickNm }, i) => (
+            <SearchKeyword key={sickCd} isFocus={i === selected ? true : false}>
+              <button tabIndex={i + 4} onClick={() => setKeywordInput(sickNm)}>
+                {sickNm.split(keywordInput)[0]}
+                <strong>{keywordInput}</strong>
+                {sickNm.split(keywordInput)[1]}
+              </button>
+            </SearchKeyword>
+          ))}
+        </SearchKeywords>
+      )}
     </>
   );
 };
@@ -201,7 +212,7 @@ const SearchKeywords = styled.ul`
   display: flex;
   flex-direction: column;
   position: absolute;
-  top: 379px;
+  top: 365px;
   left: 50%;
   transform: translateX(-50%);
   background-color: white;
