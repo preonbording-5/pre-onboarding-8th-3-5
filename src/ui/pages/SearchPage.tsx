@@ -1,31 +1,50 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import { getCacheData } from '../../lib/apis/getCacheData';
+import { useDebounce } from '../../lib/hooks/useDebounce';
 import search_icon from '../../lib/images/search_icon.svg';
 
-const SearchPage = () => (
-  <>
-    <Container>
-      <Title>
-        국내 모든 임상시험 검색하고
-        <br />
-        온라인으로 참여하기
-      </Title>
-      <InputBox>
-        <Input type='text' placeholder='🔍  질환명을 입력해 주세요.' />
-        <CancelButton>ⅹ</CancelButton>
-        <Button>
-          <img src={search_icon} width={20} height={20} alt='search_icon' />
-        </Button>
-      </InputBox>
-    </Container>
-    <SearchKeywords>
-      <li>1</li>
-      <li>2</li>
-      <li>3</li>
-    </SearchKeywords>
-  </>
-);
+const SearchPage = () => {
+  const [keyWord, setKeyWord] = useState('');
+  const [sickData, setSickData] = useState([]);
 
+  useDebounce(
+    async () => {
+      if (keyWord === '') {
+        setSickData([]);
+        return;
+      }
+      const data = await getCacheData(keyWord);
+      setSickData(data);
+    },
+    300,
+    keyWord,
+  );
+
+  return (
+    <>
+      <Container>
+        <Title>
+          국내 모든 임상시험 검색하고
+          <br />
+          온라인으로 참여하기
+        </Title>
+        <InputBox>
+          <Input type="text" placeholder="🔍  질환명을 입력해 주세요." onChange={(e) => setKeyWord(e.target.value)} />
+          <CancelButton>ⅹ</CancelButton>
+          <Button>
+            <img src={search_icon} width={20} height={20} alt="search_icon" />
+          </Button>
+        </InputBox>
+      </Container>
+      <SearchKeywords>
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+      </SearchKeywords>
+    </>
+  );
+};
 export default SearchPage;
 
 const Container = styled.div`
@@ -60,8 +79,8 @@ const InputBox = styled.div`
   max-width: 490px;
   height: 70px;
   border-radius: 42px;
-  border: 2px solid #FFFFFF;
-  background-color: #FFFFFF;
+  border: 2px solid #ffffff;
+  background-color: #ffffff;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -73,7 +92,7 @@ const InputBox = styled.div`
   padding: 20px 10px 20px 24px;
 
   :focus {
-    border: 2px solid #007BE9;
+    border: 2px solid #007be9;
   }
 `;
 
@@ -106,7 +125,7 @@ const CancelButton = styled.button`
   font-size: 18px;
   border: none;
   background-color: #afafaf;
-  color: #FFFFFF;
+  color: #ffffff;
   z-index: 1;
   cursor: pointer;
 `;
@@ -123,8 +142,8 @@ const Button = styled.button`
   border-radius: 100%;
   font-weight: 500;
   border: 0;
-  background-color: #007BE9;
-  color: #FFFFFF;
+  background-color: #007be9;
+  color: #ffffff;
   cursor: pointer;
 `;
 
