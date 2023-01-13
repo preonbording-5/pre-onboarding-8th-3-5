@@ -18,6 +18,9 @@
     ],
     "eqeqeq": "error",
     "dot-notation": "error",
-    "no-unused-vars": "warn"
+    "no-unused-vars": "warn",
+  },
+  "globals": {
+  "NodeJS": true
   }
 }
