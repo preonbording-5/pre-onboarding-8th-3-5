@@ -1,28 +1,26 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
-import { getSick } from '../../lib/apis/getData';
+import { getCacheData } from '../../lib/apis/getCacheData';
+import { useDebounce } from '../../lib/hooks/useDebounce';
 import search_icon from '../../lib/images/search_icon.svg';
 import { SickItem } from '../../lib/types/sickItem.type';
 
-type Cache = Record<string, SickItem[]>;
-
 const SearchPage = () => {
   const [keywordInput, setKeywordInput] = useState('');
-  const [cache, setCache] = useState<Cache>({ '': [] });
+  const [searchResult, setSearchResult] = useState<SickItem[]>([]);
 
-  const searchResult: SickItem[] | undefined = cache[keywordInput];
-
-  useEffect(() => {
-    const debounce = setTimeout(() => {
-      if (!keywordInput) return;
-      if (keywordInput in cache) return;
-      getSick(keywordInput).then((data) => {
-        setCache((prevCache) => ({ ...prevCache, [keywordInput]: data }));
-      });
-    }, 400);
-
-    return () => clearTimeout(debounce);
-  }, [keywordInput, cache]);
+  useDebounce(
+    async () => {
+      if (keywordInput === '') {
+        setSearchResult([]);
+        return;
+      }
+      const data = await getCacheData(keywordInput);
+      setSearchResult(data);
+    },
+    300,
+    keywordInput,
+  );
 
   return (
     <>
@@ -49,6 +47,7 @@ const SearchPage = () => {
         </InputBox>
       </Container>
       <SearchKeywords>
+        {!searchResult[0] && <p>검색 결과가 없습니다</p>}
         {searchResult?.map(({ sickCd, sickNm }, i) => (
           <SearchKeyword key={sickCd}>
             <button tabIndex={i + 4} onClick={() => setKeywordInput(sickNm)}>
