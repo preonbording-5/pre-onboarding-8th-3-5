@@ -33,7 +33,7 @@ npm start
 <br/>
 
 ## 📌 배포 링크
-[클라이언트 배포 링크]()
+[클라이언트 배포 링크](https://exquisite-crisp-33fbf8.netlify.app/)
 
 <br/>
 
