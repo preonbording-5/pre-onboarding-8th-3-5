@@ -17,12 +17,12 @@ export const getCacheData = async (keyWord: string) => {
       console.log(e);
     }
   } else {
-    const data = sessionStorage.getItem(keyWord);
+    const data = sessionStorage.getItem(keyWord) as string;
     if (sessionStorage.length > maxLength) {
       sessionStorage.removeItem(keyWord);
-      sessionStorage.setItem(keyWord, JSON.stringify(data));
+      sessionStorage.setItem(keyWord, data);
     } else {
-      sessionStorage.setItem(keyWord, JSON.stringify(data));
+      sessionStorage.setItem(keyWord, data);
     }
     return JSON.parse(data as string);
   }
