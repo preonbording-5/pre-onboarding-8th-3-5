@@ -5,7 +5,7 @@ const maxLength = 50;
 export const getCacheData = async (keyWord: string) => {
   if (sessionStorage.getItem(keyWord) === null) {
     try {
-      const { data } = await getSickData(keyWord);
+      const data = await getSickData(keyWord);
       if (sessionStorage.length >= maxLength) {
         sessionStorage.removeItem(sessionStorage.key(0) as string);
         sessionStorage.setItem(keyWord, JSON.stringify(data));
